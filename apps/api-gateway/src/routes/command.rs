@@ -2,14 +2,12 @@ use actix_web::{post, web, HttpResponse, Responder};
 use serde_json::json;
 use uuid::Uuid;
 
-use crate::middleware::auth::AuthenticatedUser;
 use crate::models::agent::CreateCommandRequest;
 use crate::services::redis_state;
 use crate::AppState;
 
 #[post("/api/command")]
 pub async fn create_command(
-    user: AuthenticatedUser,
     state: web::Data<AppState>,
     request: web::Json<CreateCommandRequest>,
 ) -> impl Responder {
@@ -30,7 +28,7 @@ pub async fn create_command(
     if let Err(e) = crate::services::audit::log_action(
         &state.db_pool,
         &task_id,
-        &user.claims.sub,
+        "local_user",
         "command_received",
         json!({ "command": command }),
     )
