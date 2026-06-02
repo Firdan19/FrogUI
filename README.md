@@ -1,228 +1,86 @@
-# 🐸 FrogUI — The Visual Web GUI for Autonomous AI Agents
-
-<p align="center">
-  <strong>A premium, self-hosted Web UI alternative for terminal-based AI agents (e.g., Hermes Agent, OpenClaw, and emerging tools).</strong><br>
-  Terminal Subprocess Manager • Rust API Gateway • Real-time Web UI
-</p>
-
----
-
-## 📋 Table of Contents
-
-- [Why FrogUI?](#why-frogui)
-- [Overview & Capabilities](#overview--capabilities)
-- [Architecture](#architecture)
-- [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
-- [Project Structure](#project-structure)
-- [Configuration](#configuration)
-- [VPS Deployment Guide](#vps-deployment-guide)
-- [API Reference](#api-reference)
-- [License](#license)
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Firdan19/FrogUI/main/assets/logo-placeholder.png" alt="FrogUI Logo" width="150" />
+  <h1>🐸 FrogUI</h1>
+  <p><strong>Stop staring at your terminal. Give your AI Agents the beautiful GUI they deserve.</strong></p>
+  
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  [![Rust](https://img.shields.io/badge/Rust-Gateway-orange.svg)](https://www.rust-lang.org/)
+  [![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](#-contributing)
+  
+  <br/>
+  
+  *( 🚧 **Insert your epic demo GIF here** - Show the split screen of a boring CLI vs FrogUI 🚧 )*
+</div>
 
 ---
 
-## Why FrogUI? 
+## ⚡ Why FrogUI?
 
-Autonomous AI agent frameworks (like **Hermes Agent**, **OpenClaw**, and many other emerging tools) are incredibly powerful, but they often restrict you to a terminal (CLI) interface or require integration with third-party chat apps (Telegram, Discord, Slack) to interact visually.
+Autonomous AI agent frameworks (like **Hermes Agent**, **OpenClaw**, and many other emerging tools) are incredibly powerful. But let's be honest: tracking their complex reasoning streams in a scrolling black terminal is exhausting and hard to demo to non-technical users.
 
 **FrogUI bridges that gap.** 
 
-As the ecosystem of CLI-based autonomous agents continues to grow, FrogUI provides a generalized, **rich, interactive, and professional Web GUI** layer. This project is continuously being updated and supported to adapt to new agent frameworks as they emerge.
+It is a lightweight, universal **Terminal Subprocess Manager and Web UI**. It wraps around your favorite CLI agents, executes them in the background, and streams their terminal output straight to a premium, framework-agnostic web dashboard.
 
-If you are a developer, researcher, or AI enthusiast who wants to experiment with autonomous agent workflows but prefers a visual experience over scrolling text in a black terminal, FrogUI is built for you.
+## ✨ Features
 
-FrogUI provides:
-- 🖥️ **Visual Command Panel:** Send complex tasks and view agent reasoning streams in real-time.
-- 🧠 **Memory Visualization:** See what your agent remembers from past sessions.
-- 📊 **Status Indicators:** Visually track the execution state of your agent's background tasks.
-- 🔒 **Self-Hosted Privacy:** Keep your data completely private, just like OpenClaw.
-
----
-
-## Overview & Capabilities
-
-FrogUI acts as a Terminal Subprocess Manager and Web UI. Instead of running heavy AI inference engines itself, it wraps around your favorite CLI agents, executes them in the background, and streams their terminal output straight to a beautiful web dashboard.
-
-**Core Capabilities:**
-- 🦀 **Rust API Gateway & Process Manager:** Spawns your CLI agent processes locally and streams `stdout`/`stderr` securely via Server-Sent Events (SSE).
-- 🗄️ **Persistent Agent Memory:** Uses PostgreSQL with `pgvector` to store and semantically retrieve past agent interactions and skills.
-- ⚡ **Real-time Task State:** Uses Redis to manage and track the state of long-running autonomous tasks.
-- 🎨 **Minimalist Luxury UI:** A framework-agnostic Web Components UI (with React adapter) that feels premium and responsive.
+- 🖥️ **Live Visual Command Panel:** Watch your agent's thoughts and terminal output stream in real-time.
+- 🦀 **Blazing Fast Rust Gateway:** Handles process spawning and secure Server-Sent Events (SSE) streaming with zero lag.
+- 🎨 **Minimalist Premium UI:** A beautiful Web Components interface that feels modern and responsive out of the box.
+- 🔒 **100% Private & Self-Hosted:** Keep your data completely local. If your agent is offline, FrogUI is offline.
 
 ---
 
-## Architecture
+## 🚀 Quick Start (Under 60 Seconds)
 
-FrogUI separates the UI and the API gateway for maximum performance and stability.
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                      User Browser                       │
-│          FrogUI Web Components / React Adapter          │
-│        (The Visual Alternative to CLI Terminals)        │
-└────────────────────────┬────────────────────────────────┘
-                         │ HTTP / Real-time SSE Stream
-                         ▼
-┌─────────────────────────────────────────────────────────┐
-│               Rust API Gateway (:3001)                  │
-│   Auth • Rate Limit • Subprocess Manager • Streaming    │
-└──────┬─────────────────┬──────────────────┬─────────────┘
-       │                 │                  │
-       ▼                 ▼                  ▼
-┌──────────────┐  ┌─────────────┐  ┌───────────────┐
-│  CLI Agent   │  │  PostgreSQL │  │     Redis     │
-│  (e.g.,      │  │  + pgvector │  │    (:6379)    │
-│  OpenClaw)   │  │   (:5432)   │  │  Task State   │
-└──────────────┘  └─────────────┘  └───────────────┘
-```
-
----
-
-## Prerequisites
-
-To run FrogUI locally or on a server, you need:
-
-| Tool | Version | Purpose |
-|------|---------|---------|
-| [Docker](https://docs.docker.com/get-docker/) | 20.10+ | Container runtime |
-| [Docker Compose](https://docs.docker.com/compose/install/) | v2+ | Multi-container orchestration |
-| [Git](https://git-scm.com/) | 2.30+ | Version control |
-
----
-
-## Quick Start
-
-### 1. Clone the repository
-
+### 1. Clone & Configure
 ```bash
 git clone https://github.com/Firdan19/FrogUI.git
 cd FrogUI
-```
-
-### 2. Set up your environment
-
-```bash
 cp .env.example .env
 ```
-> ⚠️ **Important:** If deploying to a public server, change the `POSTGRES_PASSWORD` and `DATABASE_URL` in your `.env` file!
-By default, `AGENT_CLI_COMMAND` is set to a mock script (`./scripts/run_agent.sh`). You can change this to the command that runs your actual CLI agent.
 
-### 3. Launch the Ecosystem
+> **Pro Tip:** In your `.env` file, change `AGENT_CLI_COMMAND` to whatever terminal command runs your favorite agent (e.g., `AGENT_CLI_COMMAND="openclaw run"`). By default, it runs a mock simulation script so you can test it instantly!
 
+### 2. Launch
 ```bash
 docker compose up --build
 ```
 
-### 4. Access the Visual GUI
-
-Open your browser and navigate to:
-- 🎨 **Studio UI (Visual Interface):** [http://localhost:5173](http://localhost:5173)
-
-Behind the scenes:
-- 🦀 **API Gateway:** `localhost:3001`
-- 🗄️ **PostgreSQL Memory DB:** `localhost:5432`
-- ⚡ **Redis State:** `localhost:6379`
+### 3. Enjoy the View
+Open your browser and navigate to [http://localhost:5173](http://localhost:5173). Start chatting with your agent visually!
 
 ---
 
-## Project Structure
+## 🏗️ Architecture
 
-```
-FrogUI/
-├── apps/
-│   ├── api-gateway/          # Rust API gateway & Subprocess runner
-│   ├── studio/               # The Visual GUI shell
-│   └── frontend/             # Demo UI
-├── packages/
-│   ├── ui-core/              # Vanilla Web Components (The GUI layer)
-│   ├── react-adapter/        # React wrappers & hooks
-│   └── shared-contracts/     # JSON schemas & API types
-├── database/
-│   ├── postgres/init/        # SQL migrations (pgvector memory tables)
-│   └── redis/                # Redis config
-├── infra/                    # Dockerfiles, Security, Observability
-├── scripts/                  # Utilities (e.g. mock agent scripts)
-└── docker-compose.yml        # Full stack orchestration
-```
+FrogUI is extremely lightweight and decoupled:
+
+1. **User Browser (Web UI):** Sends commands via HTTP and listens to the SSE stream.
+2. **Rust API Gateway:** Reads your `.env`, spawns your CLI Agent as a background process, and intercepts `stdout/stderr`.
+3. **The Agent (CLI):** Your actual AI agent doing the hard work in the background.
 
 ---
 
-## Configuration
+## 🗺️ Roadmap (We need your help!)
 
-Customize your deployment by editing `.env`:
+FrogUI is growing fast, and there are so many exciting features on the horizon. If you want to contribute, here are some ideas:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `FROGUI_ENV` | `development` | Environment mode |
-| `GATEWAY_PORT` | `3001` | API Gateway port |
-| `AGENT_CLI_COMMAND` | `./scripts/run_agent.sh` | The terminal command executed by the Gateway |
-| `POSTGRES_PASSWORD` | *(see .env)* | **Change this for production!** |
-| `DATABASE_URL` | *(auto-composed)* | Full PostgreSQL connection string |
-| `STUDIO_PORT` | `5173` | Studio UI port |
+- [ ] **Dark / Light Mode Toggle:** Because developers love dark mode.
+- [ ] **Syntax Highlighting:** Automatically detect and format code blocks in the agent's output.
+- [ ] **Agent Profiles:** Ability to switch between different CLI commands (e.g., Hermes vs OpenClaw) directly from the UI.
+- [ ] **Desktop App:** Package the Web UI and Rust Gateway into a lightweight Tauri/Electron app.
 
----
+## 🤝 Contributing
 
-## VPS Deployment Guide
+**We love Pull Requests!** FrogUI is built for the community, by the community. 
 
-If you want to host your agent on a cloud server (VPS) so it runs 24/7 autonomously, follow these steps:
+Whether you are fixing a typo, adding a massive feature, or writing a tutorial, we want your help to make this the standard GUI for terminal agents.
 
-### 1. VPS Preparation
-Get a fresh Ubuntu server (e.g., Oracle Cloud Free Tier, Hetzner, or DigitalOcean).
-```bash
-sudo apt update && sudo apt upgrade -y
-# Install Docker
-curl -fsSL https://get.docker.com | sh
-sudo usermod -aG docker $USER
-sudo apt install docker-compose-plugin -y
-# Log out and log back in to apply group changes
-```
-
-### 2. Clone & Configure
-```bash
-git clone https://github.com/Firdan19/FrogUI.git
-cd FrogUI
-cp .env.example .env
-nano .env
-```
-*Change `FROGUI_ENV=production`, set your actual `AGENT_CLI_COMMAND`, and set a secure `POSTGRES_PASSWORD`.*
-
-### 3. Launch
-```bash
-docker compose up --build -d
-```
-
-### 4. Reverse Proxy (Optional but Recommended)
-To access your agent securely via HTTPS, install Nginx and Certbot:
-```bash
-sudo apt install nginx certbot python3-certbot-nginx -y
-```
-Create a proxy configuration routing port `80/443` to `127.0.0.1:5173` (Studio UI) and `/api` to `127.0.0.1:3001` (Gateway). Run `sudo certbot --nginx` to secure it.
+Please check out our [Contributing Guidelines](CONTRIBUTING.md) to get started. It's super easy!
 
 ---
 
-## API Reference
+## 📄 License
 
-If you still want to interact with your agent programmatically, you can use the Rust API Gateway:
-
-### Start a Task (Command)
-```http
-POST /api/command
-Content-Type: application/json
-
-{
-  "command": "Analyze the latest logs and summarize errors."
-}
-```
-
-### Stream Agent Terminal Output (SSE)
-```http
-GET /api/events
-Accept: text/event-stream
-```
-
----
-
-## License
-
-MIT License — see [LICENSE](LICENSE) for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. Let's build the future of AI interfaces together!
