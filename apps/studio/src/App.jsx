@@ -64,59 +64,68 @@ function App() {
 
   return (
     <main className="studio-shell">
-      <div className="sidebar-left">
-        <div className="sidebar-icon active">🐸</div>
-        <div className="sidebar-icon">⌘</div>
-        <div className="sidebar-icon">⋯</div>
-      </div>
-      
       <header className="topbar">
-        <div><strong style={{color: 'var(--frog-color-brass)'}}>FrogUI</strong> | Agent Workspace</div>
+        <div className="topbar-left">
+          <span className="logo-icon">🐸</span>
+          <strong style={{color: 'var(--frog-color-brass)', letterSpacing: '1px'}}>FROGUI</strong>
+        </div>
         <div>
           <span style={{ color: 'var(--frog-color-olive)' }}>● Active</span>
         </div>
       </header>
 
-      <section className="canvas-area">
-        <FlowVisualizer gatewayUrl={gatewayUrl} />
-        <div className="floating-controls">
-          <button className="btn-float btn-stop" onClick={handleStop} disabled={!isRunning}>
-            Stop
-          </button>
-          <button className="btn-float btn-run" onClick={handleRun} disabled={isRunning}>
-            {isRunning ? 'Running...' : 'Test workflow'}
-          </button>
-        </div>
-      </section>
-      
-      <section className="bottom-panel">
-        <div className="pane pane-left">
-          <div className="pane-header">Chat Input</div>
-          <div className="pane-content">
-            Enter a prompt below to see the visual workflow execution.
+      <div className="main-content">
+        <section className="canvas-area">
+          <FlowVisualizer gatewayUrl={gatewayUrl} />
+          <div className="floating-controls">
+            <button 
+              className={`btn-toggle ${!isRunning ? 'active-run' : ''}`} 
+              onClick={handleRun} 
+              disabled={isRunning}
+              title="Run Agent"
+            >
+              <span className="material-icons-round">play_arrow</span>
+            </button>
+            <button 
+              className={`btn-toggle ${isRunning ? 'active-stop' : ''}`} 
+              onClick={handleStop} 
+              disabled={!isRunning}
+              title="Stop Agent"
+            >
+              <span className="material-icons-round">stop</span>
+            </button>
           </div>
-          <div className="chat-input-wrapper">
-            <form onSubmit={handleRun}>
-              <input 
-                type="text" 
-                className="chat-input" 
-                placeholder="Type a message, or press 'up' arrow for previous one"
-                value={command}
-                onChange={e => setCommand(e.target.value)}
-                disabled={isRunning}
-              />
-            </form>
-          </div>
-        </div>
+        </section>
         
-        <div className="pane pane-right">
-          <div className="pane-header">Latest Logs from Agent</div>
-          <div className="pane-content" style={{ whiteSpace: 'pre-wrap' }}>
-            {logs.length === 0 ? <span style={{opacity: 0.5}}>Waiting for execution...</span> : null}
-            {logs.map((log, i) => <div key={i}>{log}</div>)}
+        <section className="bottom-panel">
+          <div className="pane pane-left">
+            <div className="pane-header">Chat Input</div>
+            <div className="pane-content">
+              Enter a prompt below to see the visual workflow execution.
+            </div>
+            <div className="chat-input-wrapper">
+              <form onSubmit={handleRun}>
+                <input 
+                  type="text" 
+                  className="chat-input" 
+                  placeholder="Type a message, or press 'up' arrow for previous one"
+                  value={command}
+                  onChange={e => setCommand(e.target.value)}
+                  disabled={isRunning}
+                />
+              </form>
+            </div>
           </div>
-        </div>
-      </section>
+          
+          <div className="pane pane-right">
+            <div className="pane-header">Latest Logs from Agent</div>
+            <div className="pane-content" style={{ whiteSpace: 'pre-wrap' }}>
+              {logs.length === 0 ? <span style={{opacity: 0.5}}>Waiting for execution...</span> : null}
+              {logs.map((log, i) => <div key={i}>{log}</div>)}
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
   );
 }
