@@ -19,6 +19,7 @@ body {
 }
 
 .topbar {
+  position: relative;
   height: 56px;
   background: #111211;
   border-bottom: 1px solid rgba(242, 238, 229, 0.08);
@@ -35,29 +36,8 @@ body {
   gap: 12px;
 }
 
-.logo-box {
-  width: 32px;
-  height: 32px;
-  background: rgba(167, 183, 137, 0.15);
-  border: 1px solid rgba(167, 183, 137, 0.3);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 12px rgba(167, 183, 137, 0.1);
-}
-
-.logo-emoji {
-  font-size: 16px;
-  transform: translateY(-1px);
-}
-
-.logo-text {
-  font-family: var(--frog-font-sans, "Outfit", sans-serif);
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: var(--frog-color-ivory, #f2eee5);
+.logo-icon {
+  font-size: 20px;
 }
 
 .main-content {

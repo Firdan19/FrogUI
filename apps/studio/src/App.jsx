@@ -66,15 +66,37 @@ function App() {
     <main className="studio-shell">
       <header className="topbar">
         <div className="topbar-left">
-          <div className="logo-box">
-            <span className="logo-emoji">🐸</span>
-          </div>
-          <div className="logo-text">
-            Frog<span style={{opacity: 0.5}}>UI</span>
-          </div>
+          <span className="logo-icon" style={{ fontSize: '26px', lineHeight: 1 }}>🐸</span>
+          <strong style={{
+            color: 'var(--frog-color-brass)', 
+            letterSpacing: '1.5px', 
+            fontSize: '16px',
+            fontFamily: 'var(--frog-font-sans)',
+            fontWeight: 700
+          }}>FROGUI</strong>
         </div>
-        <div>
-          <span style={{ color: 'var(--frog-color-olive)' }}>● Active</span>
+        <div className="topbar-center" style={{ 
+          position: 'absolute', 
+          left: '50%', 
+          transform: 'translateX(-50%)', 
+          fontWeight: '500', 
+          color: 'rgba(242, 238, 229, 0.9)',
+          fontSize: '14px',
+          letterSpacing: '0.5px'
+        }}>
+          FrogUI Agent Workspace
+        </div>
+        <div className="topbar-right">
+          <span style={{ 
+            color: 'var(--frog-color-olive)', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '6px',
+            fontSize: '13px',
+            fontWeight: '600'
+          }}>
+            <span style={{ fontSize: '10px' }}>●</span> Active
+          </span>
         </div>
       </header>
 
