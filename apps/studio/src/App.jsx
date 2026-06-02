@@ -1,19 +1,121 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import FlowVisualizer from './components/FlowVisualizer';
 import '@xyflow/react/dist/style.css';
 
 function App() {
   const [gatewayUrl] = useState('http://localhost:3001');
+  const [command, setCommand] = useState('');
+  const [logs, setLogs] = useState([]);
+  const [isRunning, setIsRunning] = useState(false);
+  
+  const handleRun = async (e) => {
+    if (e) e.preventDefault();
+    if (!command.trim() || isRunning) return;
+    
+    setIsRunning(true);
+    setLogs([]);
+    
+    try {
+      const response = await fetch(`${gatewayUrl}/api/command`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command: command.trim() }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP Error ${response.status}`);
+      }
+      
+      const task = await response.json();
+      window.dispatchEvent(new CustomEvent('frogui:task-created', { detail: task }));
+      
+      // We will listen to stdout for logs in this component too
+      const es = new EventSource(`${gatewayUrl}${task.stream_url}`);
+      es.addEventListener('stdout', (e) => {
+        const payload = JSON.parse(e.data);
+        setLogs(prev => [...prev, payload.content]);
+      });
+      es.addEventListener('exit', () => {
+        es.close();
+        setIsRunning(false);
+      });
+      es.onerror = () => {
+        es.close();
+        setIsRunning(false);
+      };
+      
+      // store it to close later if user clicks stop
+      window.__currentStream = es;
+      
+    } catch (err) {
+      setLogs(prev => [...prev, `Error: ${err.message}`]);
+      setIsRunning(false);
+    }
+  };
+
+  const handleStop = () => {
+    if (window.__currentStream) {
+      window.__currentStream.close();
+      window.__currentStream = null;
+    }
+    setIsRunning(false);
+    window.dispatchEvent(new CustomEvent('frogui:task-stop'));
+  };
 
   return (
     <main className="studio-shell">
-      <section className="studio-command-surface">
-        <frog-status-indicator label="Private Runtime"></frog-status-indicator>
-        <frog-command-panel gateway-url={gatewayUrl}></frog-command-panel>
-      </section>
+      <div className="sidebar-left">
+        <div className="sidebar-icon active">🐸</div>
+        <div className="sidebar-icon">⌘</div>
+        <div className="sidebar-icon">⋯</div>
+      </div>
+      
+      <header className="topbar">
+        <div><strong style={{color: 'var(--frog-color-brass)'}}>FrogUI</strong> | Agent Workspace</div>
+        <div>
+          <span style={{ color: 'var(--frog-color-olive)' }}>● Active</span>
+        </div>
+      </header>
 
-      <section className="studio-stream-surface" style={{ padding: 0, overflow: 'hidden' }}>
+      <section className="canvas-area">
         <FlowVisualizer gatewayUrl={gatewayUrl} />
+        <div className="floating-controls">
+          <button className="btn-float btn-stop" onClick={handleStop} disabled={!isRunning}>
+            Stop
+          </button>
+          <button className="btn-float btn-run" onClick={handleRun} disabled={isRunning}>
+            {isRunning ? 'Running...' : 'Test workflow'}
+          </button>
+        </div>
+      </section>
+      
+      <section className="bottom-panel">
+        <div className="pane pane-left">
+          <div className="pane-header">Chat Input</div>
+          <div className="pane-content">
+            Enter a prompt below to see the visual workflow execution.
+          </div>
+          <div className="chat-input-wrapper">
+            <form onSubmit={handleRun}>
+              <input 
+                type="text" 
+                className="chat-input" 
+                placeholder="Type a message, or press 'up' arrow for previous one"
+                value={command}
+                onChange={e => setCommand(e.target.value)}
+                disabled={isRunning}
+              />
+            </form>
+          </div>
+        </div>
+        
+        <div className="pane pane-right">
+          <div className="pane-header">Latest Logs from Agent</div>
+          <div className="pane-content" style={{ whiteSpace: 'pre-wrap' }}>
+            {logs.length === 0 ? <span style={{opacity: 0.5}}>Waiting for execution...</span> : null}
+            {logs.map((log, i) => <div key={i}>{log}</div>)}
+          </div>
+        </div>
       </section>
     </main>
   );
