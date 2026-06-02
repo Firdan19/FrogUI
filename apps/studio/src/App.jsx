@@ -66,8 +66,12 @@ function App() {
     <main className="studio-shell">
       <header className="topbar">
         <div className="topbar-left">
-          <span className="logo-icon">🐸</span>
-          <strong style={{color: 'var(--frog-color-brass)', letterSpacing: '1px'}}>FROGUI</strong>
+          <div className="logo-box">
+            <span className="logo-emoji">🐸</span>
+          </div>
+          <div className="logo-text">
+            Frog<span style={{opacity: 0.5}}>UI</span>
+          </div>
         </div>
         <div>
           <span style={{ color: 'var(--frog-color-olive)' }}>● Active</span>
