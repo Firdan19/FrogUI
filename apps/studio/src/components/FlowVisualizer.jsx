@@ -7,37 +7,60 @@ import {
   useNodesState,
   useEdgesState,
   addEdge,
+  Handle,
   Position,
 } from '@xyflow/react';
 
+const getNodeStyle = (type) => {
+  switch (type) {
+    case 'START': return { icon: 'play_circle', color: 'var(--frog-color-olive, #a7b789)' };
+    case 'INPUT': return { icon: 'chat', color: '#64b5f6' };
+    case 'THOUGHT': return { icon: 'lightbulb', color: 'var(--frog-color-brass, #d8c7a3)' };
+    case 'ACTION': return { icon: 'build', color: '#ffb74d' };
+    case 'RESPONSE': return { icon: 'forum', color: '#ba68c8' };
+    case 'END': return { icon: 'check_circle', color: 'var(--frog-color-olive, #a7b789)' };
+    case 'STOPPED': return { icon: 'cancel', color: '#ff5252' };
+    default: return { icon: 'memory', color: 'rgba(242, 238, 229, 0.6)' };
+  }
+};
+
 const nodeTypes = {
   custom: ({ data }) => {
+    const { icon, color } = getNodeStyle(data.type);
+    
     return (
       <div style={{
-        padding: '12px 16px',
-        borderRadius: '12px',
-        background: 'rgba(242, 238, 229, 0.08)',
-        backdropFilter: 'blur(18px)',
+        width: '280px',
+        borderRadius: '8px',
+        background: '#1f201f',
         border: '1px solid rgba(242, 238, 229, 0.1)',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
         color: 'var(--frog-color-ivory, #f2eee5)',
         fontFamily: 'var(--frog-font-sans, "Outfit", sans-serif)',
-        minWidth: '150px',
-        maxWidth: '300px',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+        overflow: 'hidden'
       }}>
-        <div style={{ 
-          fontSize: '11px', 
-          textTransform: 'uppercase', 
-          color: 'var(--frog-color-brass, #d8c7a3)',
-          marginBottom: '6px',
-          fontWeight: '600',
-          letterSpacing: '0.5px'
+        <Handle type="target" position={Position.Top} style={{ background: color, border: 'none' }} />
+        
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: '10px 14px',
+          background: 'rgba(0, 0, 0, 0.2)',
+          borderBottom: '1px solid rgba(242, 238, 229, 0.05)'
         }}>
-          {data.type}
+          <span className="material-icons-round" style={{ fontSize: '18px', marginRight: '8px', color }}>
+            {icon}
+          </span>
+          <strong style={{ fontSize: '12px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+            {data.type}
+          </strong>
         </div>
-        <div style={{ fontSize: '13px', lineHeight: '1.5' }}>
+        
+        <div style={{ padding: '14px', fontSize: '13px', lineHeight: '1.5', color: 'rgba(242, 238, 229, 0.8)', wordBreak: 'break-word' }}>
           {data.label}
         </div>
+        
+        <Handle type="source" position={Position.Bottom} style={{ background: color, border: 'none' }} />
       </div>
     );
   }
@@ -55,11 +78,11 @@ export default function FlowVisualizer({ gatewayUrl }) {
     const newNode = {
       id,
       type: 'custom',
-      position: { x: 250, y: layoutYRef.current },
+      position: { x: window.innerWidth / 2 - 140, y: layoutYRef.current },
       data: { type, label },
     };
 
-    layoutYRef.current += 150;
+    layoutYRef.current += 160;
 
     setNodes((nds) => [...nds, newNode]);
 
@@ -69,7 +92,7 @@ export default function FlowVisualizer({ gatewayUrl }) {
         source: lastNodeIdRef.current,
         target: id,
         animated: true,
-        style: { stroke: 'var(--frog-color-brass, #d8c7a3)', strokeWidth: 2 },
+        style: { stroke: 'rgba(242, 238, 229, 0.4)', strokeWidth: 2 },
       };
       setEdges((eds) => addEdge(newEdge, eds));
     }
@@ -80,7 +103,6 @@ export default function FlowVisualizer({ gatewayUrl }) {
   useEffect(() => {
     const handleTaskCreated = (event) => {
       const task = event.detail;
-      // Reset graph
       setNodes([]);
       setEdges([]);
       layoutYRef.current = 50;
@@ -104,8 +126,6 @@ export default function FlowVisualizer({ gatewayUrl }) {
         } else if (text.startsWith('Agent action:')) {
           addNodeToGraph('ACTION', text.replace('Agent action:', '').trim());
         } else if (text.startsWith('Agent Response:')) {
-          // The next line is the actual response, but since it's line-by-line, we might miss the actual content.
-          // For simplicity, we just add the node "Generating Response"
           addNodeToGraph('RESPONSE', 'Generating Response...');
         } else if (text.startsWith('> User Command')) {
           addNodeToGraph('INPUT', text.trim());
@@ -149,8 +169,11 @@ export default function FlowVisualizer({ gatewayUrl }) {
         nodeTypes={nodeTypes}
         colorMode="dark"
         fitView
+        fitViewOptions={{ maxZoom: 1, minZoom: 0.2, padding: 0.2 }}
+        minZoom={0.1}
+        maxZoom={1.5}
       >
-        <Background color="#333" gap={16} />
+        <Background color="rgba(242, 238, 229, 0.1)" gap={20} size={1.5} />
         <Controls style={{ fill: 'var(--frog-color-brass, #d8c7a3)' }} />
       </ReactFlow>
     </div>
