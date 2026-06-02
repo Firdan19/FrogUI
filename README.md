@@ -1,7 +1,7 @@
 # 🐸 FrogUI — The Visual Web GUI for Autonomous AI Agents
 
 <p align="center">
-  <strong>A premium, self-hosted Web UI alternative for users of terminal-based agents like Hermes Agent and OpenClaw.</strong><br>
+  <strong>A premium, self-hosted Web UI alternative for terminal-based AI agents (e.g., Hermes Agent, OpenClaw, and emerging tools).</strong><br>
   High-performance C++ inference engine • Rust API Gateway • Real-time Web UI
 </p>
 
@@ -9,7 +9,7 @@
 
 ## 📋 Table of Contents
 
-- [Why FrogUI? (The Hermes & OpenClaw Alternative)](#why-frogui)
+- [Why FrogUI?](#why-frogui)
 - [Overview & Capabilities](#overview--capabilities)
 - [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
@@ -24,13 +24,15 @@
 
 ## Why FrogUI? 
 
-Autonomous AI agent frameworks like **Hermes Agent** and **OpenClaw** are incredibly powerful, but they often restrict you to a terminal (CLI) interface or require integration with third-party chat apps (Telegram, Discord, Slack) to interact visually.
+Autonomous AI agent frameworks (like **Hermes Agent**, **OpenClaw**, and many other emerging tools) are incredibly powerful, but they often restrict you to a terminal (CLI) interface or require integration with third-party chat apps (Telegram, Discord, Slack) to interact visually.
 
 **FrogUI bridges that gap.** 
 
-If you are a developer, researcher, or AI enthusiast who wants to experiment with autonomous agent workflows but prefers a **rich, interactive, and professional Web GUI**, FrogUI is built for you. 
+As the ecosystem of CLI-based autonomous agents continues to grow, FrogUI provides a generalized, **rich, interactive, and professional Web GUI** layer. This project is continuously being updated and supported to adapt to new agent frameworks as they emerge.
 
-Instead of staring at scrolling text in a black terminal, FrogUI provides:
+If you are a developer, researcher, or AI enthusiast who wants to experiment with autonomous agent workflows but prefers a visual experience over scrolling text in a black terminal, FrogUI is built for you.
+
+FrogUI provides:
 - 🖥️ **Visual Command Panel:** Send complex tasks and view agent reasoning streams in real-time.
 - 🧠 **Memory Visualization:** See what your agent remembers from past sessions.
 - 📊 **Status Indicators:** Visually track the execution state of your agent's background tasks.
