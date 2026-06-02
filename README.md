@@ -1,7 +1,7 @@
-# 🐸 FrogUI — AI Agent Framework
+# 🐸 FrogUI — The Visual Web GUI for Autonomous AI Agents
 
 <p align="center">
-  <strong>Enterprise-grade AI agent framework with a luxury minimal UI.</strong><br>
+  <strong>A premium, self-hosted Web UI alternative for users of terminal-based agents like Hermes Agent and OpenClaw.</strong><br>
   High-performance C++ inference engine • Rust API Gateway • Real-time Web UI
 </p>
 
@@ -9,45 +9,63 @@
 
 ## 📋 Table of Contents
 
-- [Overview](#overview)
+- [Why FrogUI? (The Hermes & OpenClaw Alternative)](#why-frogui)
+- [Overview & Capabilities](#overview--capabilities)
 - [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
 - [Project Structure](#project-structure)
 - [Configuration](#configuration)
-- [Development Guide](#development-guide)
-- [Deployment to VPS](#deployment-to-vps)
+- [VPS Deployment Guide](#vps-deployment-guide)
 - [API Reference](#api-reference)
-- [Troubleshooting](#troubleshooting)
 - [License](#license)
 
 ---
 
-## Overview
+## Why FrogUI? 
 
-FrogUI is a **self-hosted AI agent framework** that separates a high-performance backend runtime from a plug-and-play UI layer. Designed for single-user, professional use.
+Autonomous AI agent frameworks like **Hermes Agent** and **OpenClaw** are incredibly powerful, but they often restrict you to a terminal (CLI) interface or require integration with third-party chat apps (Telegram, Discord, Slack) to interact visually.
 
-**Key Features:**
-- 🧠 **C++ Core Engine** — Local AI inference via llama.cpp (GGUF models)
-- 🦀 **Rust API Gateway** — Secure request mediation with rate limiting, audit logging, and SSE streaming
-- 🗄️ **PostgreSQL + pgvector** — Vector-based agent memory for semantic recall
-- ⚡ **Redis** — Real-time task state management
-- 🎨 **Web Components UI** — Framework-agnostic components with React adapter
+**FrogUI bridges that gap.** 
+
+If you are a developer, researcher, or AI enthusiast who wants to experiment with autonomous agent workflows but prefers a **rich, interactive, and professional Web GUI**, FrogUI is built for you. 
+
+Instead of staring at scrolling text in a black terminal, FrogUI provides:
+- 🖥️ **Visual Command Panel:** Send complex tasks and view agent reasoning streams in real-time.
+- 🧠 **Memory Visualization:** See what your agent remembers from past sessions.
+- 📊 **Status Indicators:** Visually track the execution state of your agent's background tasks.
+- 🔒 **Self-Hosted Privacy:** Keep your data completely private, just like OpenClaw.
+
+---
+
+## Overview & Capabilities
+
+FrogUI is a full-stack, self-hosted agent framework. It provides its own internal C++ runtime powered by `llama.cpp` to execute tasks and reasoning locally, bypassing the need for expensive API subscriptions.
+
+**Core Capabilities:**
+- 🧠 **Local C++ Core Engine:** Executes GGUF models (like TinyLlama) locally for fast, private inference.
+- 🦀 **Rust API Gateway:** Handles secure request mediation, rate limiting, and real-time Server-Sent Events (SSE).
+- 🗄️ **Persistent Agent Memory:** Uses PostgreSQL with `pgvector` to store and semantically retrieve past agent interactions and skills.
+- ⚡ **Real-time Task State:** Uses Redis to manage and track the state of long-running autonomous tasks.
+- 🎨 **Minimalist Luxury UI:** A framework-agnostic Web Components UI (with React adapter) that feels premium and responsive.
 
 ---
 
 ## Architecture
 
+FrogUI separates the UI, the API gateway, and the heavy inference engine into dedicated microservices for maximum performance and stability.
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                      User Browser                       │
-│          FrogUI Web Components / React Adapter           │
+│          FrogUI Web Components / React Adapter          │
+│        (The Visual Alternative to CLI Terminals)        │
 └────────────────────────┬────────────────────────────────┘
-                         │ HTTP / SSE
+                         │ HTTP / Real-time SSE Stream
                          ▼
 ┌─────────────────────────────────────────────────────────┐
 │               Rust API Gateway (:3001)                  │
-│   Auth • Rate Limit • Audit Log • SSE Stream            │
+│   Auth • Rate Limit • Audit Log • Event Streaming       │
 └──────┬─────────────────┬──────────────────┬─────────────┘
        │                 │                  │
        ▼                 ▼                  ▼
@@ -62,7 +80,7 @@ FrogUI is a **self-hosted AI agent framework** that separates a high-performance
 
 ## Prerequisites
 
-Make sure these tools are installed on your system:
+To run FrogUI locally or on a server, you need:
 
 | Tool | Version | Purpose |
 |------|---------|---------|
@@ -70,15 +88,7 @@ Make sure these tools are installed on your system:
 | [Docker Compose](https://docs.docker.com/compose/install/) | v2+ | Multi-container orchestration |
 | [Git](https://git-scm.com/) | 2.30+ | Version control |
 
-**Optional** (for local development without Docker):
-
-| Tool | Version | Purpose |
-|------|---------|---------|
-| [Rust](https://rustup.rs/) | 1.75+ | Build API Gateway |
-| [CMake](https://cmake.org/) | 3.20+ | Build C++ Core Engine |
-| [Node.js](https://nodejs.org/) | 20+ | Build UI packages |
-| [PostgreSQL](https://www.postgresql.org/) | 16 | Database with pgvector |
-| [Redis](https://redis.io/) | 7+ | State management |
+*(If you wish to compile the C++ Engine or Rust Gateway manually without Docker, you will need CMake 3.20+ and Rust 1.75+).*
 
 ---
 
@@ -91,38 +101,37 @@ git clone https://github.com/Firdan19/FrogUI.git
 cd FrogUI
 ```
 
-### 2. Copy environment file
+### 2. Set up your environment
 
 ```bash
 cp .env.example .env
 ```
+> ⚠️ **Important:** If deploying to a public server, change the `POSTGRES_PASSWORD` and `DATABASE_URL` in your `.env` file!
 
-> ⚠️ **Important:** Edit `.env` and change `POSTGRES_PASSWORD` before deploying to production!
+### 3. Download the AI model
 
-### 3. Download AI model
+The C++ Core Engine requires a GGUF model to function autonomously. Download the default test model (TinyLlama ~637 MB):
 
 ```bash
 bash scripts/download_model.sh
 ```
 
-This downloads **TinyLlama 1.1B** (~637 MB) to `apps/core-engine/models/`.
-
-### 4. Start all services
+### 4. Launch the Agent Ecosystem
 
 ```bash
 docker compose up --build
 ```
 
-### 5. Open in browser
+### 5. Access the Visual GUI
 
-| Service | URL |
-|---------|-----|
-| 🎨 Studio UI | [http://localhost:5173](http://localhost:5173) |
-| 🦀 API Gateway | [http://localhost:3001](http://localhost:3001) |
-| 🗄️ PostgreSQL | `localhost:5432` |
-| ⚡ Redis | `localhost:6379` |
+Open your browser and navigate to:
+- 🎨 **Studio UI (Visual Interface):** [http://localhost:5173](http://localhost:5173)
 
-The C++ Core Engine runs on internal Docker network only (port `8080`).
+Behind the scenes:
+- 🦀 **API Gateway:** `localhost:3001`
+- 🗄️ **PostgreSQL Memory DB:** `localhost:5432`
+- ⚡ **Redis State:** `localhost:6379`
+- 🧠 **C++ Core Engine:** Runs privately on the internal Docker network (`:8080`).
 
 ---
 
@@ -131,314 +140,96 @@ The C++ Core Engine runs on internal Docker network only (port `8080`).
 ```
 FrogUI/
 ├── apps/
-│   ├── core-engine/          # C++ AI inference engine (llama.cpp)
-│   │   ├── include/frogui/   # Header files
-│   │   ├── src/              # Source files
-│   │   ├── models/           # GGUF model files (git-ignored)
-│   │   ├── protocols/        # JSON schemas for agent communication
-│   │   ├── tests/            # Unit tests (Catch2)
-│   │   └── CMakeLists.txt    # Build configuration
-│   ├── api-gateway/          # Rust Actix-Web API gateway
-│   │   ├── src/
-│   │   │   ├── middleware/   # Auth, rate limit, request guard
-│   │   │   ├── models/      # Data models
-│   │   │   ├── routes/      # HTTP endpoints (command, SSE, health)
-│   │   │   └── services/    # Business logic (DB, Redis, streaming)
-│   │   ├── Cargo.toml
-│   │   └── Cargo.lock
-│   ├── studio/               # Single-user UI shell
-│   └── frontend/             # Landing page / demo UI
+│   ├── core-engine/          # C++ Autonomous Agent Engine (llama.cpp)
+│   ├── api-gateway/          # Rust API gateway & SSE event stream
+│   ├── studio/               # The Visual GUI shell
+│   └── frontend/             # Demo UI
 ├── packages/
-│   ├── ui-core/              # Vanilla Web Components
-│   │   ├── src/components/   # frog-command-panel, frog-agent-stream, etc.
-│   │   ├── src/client/       # Gateway & SSE clients
-│   │   └── src/styles/       # CSS tokens, reset, surfaces
+│   ├── ui-core/              # Vanilla Web Components (The GUI layer)
 │   ├── react-adapter/        # React wrappers & hooks
-│   └── shared-contracts/     # JSON schemas & TypeScript types
+│   └── shared-contracts/     # JSON schemas & API types
 ├── database/
-│   ├── postgres/init/        # SQL migrations (pgvector, agent_memory, audit)
-│   └── redis/                # Redis configuration
-├── infra/
-│   ├── docker/               # Dockerfiles for each service
-│   ├── security/             # Threat model & sandbox policy
-│   └── observability/        # Prometheus config
-├── scripts/                  # Utility scripts
-│   ├── download_model.sh     # Download AI model
-│   ├── dev.sh                # Start dev environment
-│   ├── build-all.sh          # Build all services
-│   └── reset-local-db.sh     # Reset database
-├── docs/                     # Documentation
-├── tests/                    # Integration, load, and E2E test specs
-├── docker-compose.yml        # Full stack orchestration
-├── .env.example              # Environment variable template
-└── package.json              # Node.js workspace root
+│   ├── postgres/init/        # SQL migrations (pgvector memory tables)
+│   └── redis/                # Redis config
+├── infra/                    # Dockerfiles, Security, Observability
+├── scripts/                  # Utilities for model download & db reset
+└── docker-compose.yml        # Full stack orchestration
 ```
 
 ---
 
 ## Configuration
 
-All configuration is done via environment variables. Copy `.env.example` to `.env` and customize:
+Customize your deployment by editing `.env`:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `FROGUI_ENV` | `development` | Environment mode |
-| `GATEWAY_HOST` | `0.0.0.0` | API Gateway bind address |
 | `GATEWAY_PORT` | `3001` | API Gateway port |
-| `CORE_ENGINE_URL` | `http://core-engine:8080` | C++ engine URL (Docker internal) |
-| `POSTGRES_HOST` | `postgres` | PostgreSQL host |
-| `POSTGRES_PORT` | `5432` | PostgreSQL port |
-| `POSTGRES_DB` | `frogui` | Database name |
-| `POSTGRES_USER` | `frogui` | Database username |
-| `POSTGRES_PASSWORD` | *(set in .env)* | **Database password — change for production!** |
+| `CORE_ENGINE_URL` | `http://core-engine:8080` | Internal C++ engine URL |
+| `POSTGRES_PASSWORD` | *(see .env)* | **Change this for production!** |
 | `DATABASE_URL` | *(auto-composed)* | Full PostgreSQL connection string |
-| `REDIS_URL` | `redis://redis:6379` | Redis connection string |
 | `STUDIO_PORT` | `5173` | Studio UI port |
 
 ---
 
-## Development Guide
+## VPS Deployment Guide
 
-### Running with Docker (Recommended)
+If you want to host your agent on a cloud server (VPS) so it runs 24/7 autonomously, follow these steps:
 
+### 1. VPS Preparation
+Get a fresh Ubuntu server (e.g., Oracle Cloud Free Tier, Hetzner, or DigitalOcean).
 ```bash
-# Start all services
-docker compose up --build
-
-# Start in background
-docker compose up --build -d
-
-# View logs
-docker compose logs -f
-
-# Stop all services
-docker compose down
-
-# Reset database
-docker compose down -v   # removes volumes too
-bash scripts/reset-local-db.sh
-```
-
-### Building Individual Services
-
-#### C++ Core Engine
-
-```bash
-cd apps/core-engine
-
-# Download model first
-bash ../../scripts/download_model.sh
-
-# Build
-cmake -B build -S .
-cmake --build build --config Release
-
-# Run tests
-ctest --test-dir build --output-on-failure
-```
-
-**Dependencies:** CMake 3.20+, C++20 compiler, libpq-dev
-
-#### Rust API Gateway
-
-```bash
-cd apps/api-gateway
-
-# Check
-cargo check
-
-# Build
-cargo build --release
-
-# Run tests
-cargo test
-
-# Run
-cargo run
-```
-
-**Dependencies:** Rust 1.75+, libpq
-
-#### UI Packages
-
-```bash
-# Install all workspace dependencies
-npm install
-
-# Start Studio dev server
-npm run dev:studio
-
-# Build Studio
-npm run build:studio
-```
-
----
-
-## Deployment to VPS
-
-### Step 1: Prepare VPS
-
-```bash
-# Update system
 sudo apt update && sudo apt upgrade -y
-
 # Install Docker
 curl -fsSL https://get.docker.com | sh
 sudo usermod -aG docker $USER
-
-# Install Docker Compose
 sudo apt install docker-compose-plugin -y
-
-# Logout and login again for group changes
+# Log out and log back in to apply group changes
 ```
 
-### Step 2: Clone & Configure
-
+### 2. Clone & Configure
 ```bash
 git clone https://github.com/Firdan19/FrogUI.git
 cd FrogUI
-
-# Create production environment
 cp .env.example .env
 nano .env
 ```
+*Change `FROGUI_ENV=production` and set a secure `POSTGRES_PASSWORD`.*
 
-**Edit `.env` for production:**
-
+### 3. Launch
 ```bash
-FROGUI_ENV=production
-POSTGRES_PASSWORD=<GANTI_DENGAN_PASSWORD_KUAT>
-DATABASE_URL=postgres://frogui:<PASSWORD_KUAT>@postgres:5432/frogui
-```
-
-### Step 3: Download Model & Launch
-
-```bash
-# Download AI model
 bash scripts/download_model.sh
-
-# Build and start
 docker compose up --build -d
-
-# Check status
-docker compose ps
-docker compose logs -f
 ```
 
-### Step 4: Setup Domain & HTTPS (Optional)
-
-Install Nginx reverse proxy + Let's Encrypt SSL:
-
+### 4. Reverse Proxy (Optional but Recommended)
+To access your agent securely via HTTPS, install Nginx and Certbot:
 ```bash
 sudo apt install nginx certbot python3-certbot-nginx -y
-
-# Create Nginx config
-sudo nano /etc/nginx/sites-available/frogui
 ```
-
-Example Nginx config:
-
-```nginx
-server {
-    server_name yourdomain.com;
-
-    location / {
-        proxy_pass http://127.0.0.1:5173;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    location /api/ {
-        proxy_pass http://127.0.0.1:3001/;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
-
-```bash
-# Enable site
-sudo ln -s /etc/nginx/sites-available/frogui /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl reload nginx
-
-# Get SSL certificate
-sudo certbot --nginx -d yourdomain.com
-```
+Create a proxy configuration routing port `80/443` to `127.0.0.1:5173` (Studio UI) and `/api` to `127.0.0.1:3001` (Gateway). Run `sudo certbot --nginx` to secure it.
 
 ---
 
 ## API Reference
 
-### Health Check
+If you still want to interact with your agent programmatically (like OpenClaw), you can use the Rust API Gateway:
 
-```
-GET /api/health
-```
-
-### Send Command to Agent
-
-```
+### Start a Task (Command)
+```http
 POST /api/command
 Content-Type: application/json
 
 {
-  "command": "analyze this data",
-  "context": {}
+  "command": "Analyze the latest logs and summarize errors."
 }
 ```
 
-### Subscribe to Agent Events (SSE)
-
-```
+### Stream Agent Reasoning (SSE)
+```http
 GET /api/events
 Accept: text/event-stream
-```
-
-See [docs/api-reference.md](docs/api-reference.md) for the full API documentation.
-
----
-
-## Troubleshooting
-
-### Docker Compose fails to build
-
-```bash
-# Clean everything and rebuild
-docker compose down -v
-docker system prune -f
-docker compose up --build
-```
-
-### Model download fails
-
-```bash
-# Manual download
-cd apps/core-engine/models
-curl -L -o tinyllama.gguf "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf?download=true"
-```
-
-### PostgreSQL connection refused
-
-Make sure the database is running:
-
-```bash
-docker compose ps postgres
-docker compose logs postgres
-```
-
-### Port already in use
-
-```bash
-# Find and kill process on port 3001
-lsof -i :3001
-kill -9 <PID>
 ```
 
 ---
