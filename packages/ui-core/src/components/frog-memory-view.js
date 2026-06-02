@@ -3,21 +3,25 @@ template.innerHTML = `
   <style>
     :host {
       display: block;
-      color: #f2eee5;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--frog-color-ivory, #f2eee5);
+      font-family: var(--frog-font-sans, 'Outfit', sans-serif);
     }
 
     .memory {
       display: grid;
       gap: 10px;
       padding: 18px 20px;
-      background: rgba(242, 238, 229, 0.045);
+      background: var(--frog-glass-strong, rgba(242, 238, 229, 0.08));
       backdrop-filter: blur(18px);
+      border-radius: 12px;
+      border: 1px solid rgba(242, 238, 229, 0.05);
     }
 
     .title {
       color: rgba(242, 238, 229, 0.68);
-      font-size: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
     }
 
@@ -27,8 +31,8 @@ template.innerHTML = `
     }
   </style>
   <aside class="memory">
-    <div class="title">Semantic Memory</div>
-    <div class="body">pgvector-backed memory surface is ready for private agent context.</div>
+    <div class="title">Semantic Memory (Coming Soon)</div>
+    <div class="body">Long-term vector storage for your CLI agents.</div>
   </aside>
 `;
 

@@ -18,6 +18,7 @@ export class FrogStreamClient {
     });
 
     this.source.onerror = () => {
+      this.close();
       handlers.onError?.();
     };
 

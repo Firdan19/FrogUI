@@ -8,6 +8,7 @@ RUN cargo build --release
 FROM debian:bookworm-slim
 WORKDIR /app
 COPY --from=build /workspace/apps/api-gateway/target/release/frogui-api-gateway /app/frogui-api-gateway
+COPY scripts /app/scripts
 EXPOSE 3001
 CMD ["/app/frogui-api-gateway"]
 

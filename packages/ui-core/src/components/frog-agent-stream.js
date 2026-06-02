@@ -103,12 +103,23 @@ export class FrogAgentStream extends HTMLElement {
     this.events = this.shadowRoot.querySelector('.events');
     this.task = this.shadowRoot.querySelector('.task');
     window.addEventListener('frogui:task-created', this.handleTaskCreated);
+    window.addEventListener('frogui:task-stop', this.handleTaskStop);
   }
 
   disconnectedCallback() {
     window.removeEventListener('frogui:task-created', this.handleTaskCreated);
+    window.removeEventListener('frogui:task-stop', this.handleTaskStop);
     this.client?.close();
   }
+
+  handleTaskStop = () => {
+    this.client?.close();
+    if (this.activeStreamingNode) {
+      this.activeStreamingNode.classList.remove('streaming');
+      this.activeStreamingNode = null;
+    }
+    this.task.textContent = 'Stopped';
+  };
 
   handleTaskCreated = (event) => {
     const task = event.detail;

@@ -62,6 +62,11 @@ template.innerHTML = `
       gap: 14px;
     }
 
+    .buttons {
+      display: flex;
+      gap: 10px;
+    }
+
     .state {
       min-width: 0;
       color: rgba(242, 238, 229, 0.58);
@@ -83,6 +88,17 @@ template.innerHTML = `
       transition: all 0.2s ease;
     }
 
+    button.stop {
+      background: rgba(242, 238, 229, 0.1);
+      color: var(--frog-color-ivory, #f2eee5);
+      border: 1px solid rgba(242, 238, 229, 0.2);
+    }
+
+    button.stop:hover:not(:disabled) {
+      background: rgba(242, 238, 229, 0.2);
+      box-shadow: none;
+    }
+
     button:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(216, 199, 163, 0.3);
@@ -93,7 +109,7 @@ template.innerHTML = `
     }
 
     button:disabled {
-      cursor: progress;
+      cursor: not-allowed;
       opacity: 0.58;
     }
   </style>
@@ -105,7 +121,10 @@ template.innerHTML = `
     <textarea name="command" placeholder="Type a precise agent instruction..."></textarea>
     <div class="actions">
       <span class="state">Ready</span>
-      <button type="submit">Run</button>
+      <div class="buttons">
+        <button type="button" class="stop" disabled>Stop</button>
+        <button type="submit">Run</button>
+      </div>
     </div>
   </form>
 `;
@@ -120,14 +139,24 @@ export class FrogCommandPanel extends HTMLElement {
   connectedCallback() {
     this.form = this.shadowRoot.querySelector('form');
     this.textarea = this.shadowRoot.querySelector('textarea');
-    this.button = this.shadowRoot.querySelector('button');
+    this.button = this.shadowRoot.querySelector('button[type="submit"]');
+    this.stopButton = this.shadowRoot.querySelector('button.stop');
     this.state = this.shadowRoot.querySelector('.state');
     this.form.addEventListener('submit', this.handleSubmit);
+    this.stopButton.addEventListener('click', this.handleStop);
   }
 
   disconnectedCallback() {
     this.form?.removeEventListener('submit', this.handleSubmit);
+    this.stopButton?.removeEventListener('click', this.handleStop);
   }
+
+  handleStop = () => {
+    this.state.textContent = 'Stream stopped.';
+    this.button.disabled = false;
+    this.stopButton.disabled = true;
+    window.dispatchEvent(new CustomEvent('frogui:task-stop'));
+  };
 
   handleSubmit = async (event) => {
     event.preventDefault();
@@ -138,6 +167,7 @@ export class FrogCommandPanel extends HTMLElement {
     }
 
     this.button.disabled = true;
+    this.stopButton.disabled = false;
     this.state.textContent = 'Dispatching through gateway';
 
     try {
@@ -155,8 +185,8 @@ export class FrogCommandPanel extends HTMLElement {
       window.dispatchEvent(new CustomEvent('frogui:task-created', { detail: task }));
     } catch (error) {
       this.state.textContent = error.message;
-    } finally {
       this.button.disabled = false;
+      this.stopButton.disabled = true;
     }
   };
 }
