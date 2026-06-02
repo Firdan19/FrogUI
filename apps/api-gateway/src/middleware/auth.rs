@@ -26,7 +26,7 @@ impl FromRequest for AuthenticatedUser {
             Err(e) => return ready(Err(e.into())),
         };
 
-        // In a real app, JWT_SECRET should be parsed globally at startup. 
+        // In a real app, JWT_SECRET should be parsed globally at startup.
         // For simplicity, we just grab it here.
         let secret = std::env::var("JWT_SECRET").unwrap_or_else(|_| "dummy_secret".to_string());
 
@@ -40,7 +40,9 @@ impl FromRequest for AuthenticatedUser {
             Err(_) => return ready(Err(actix_web::error::ErrorUnauthorized("Invalid Token"))),
         };
 
-        ready(Ok(AuthenticatedUser { claims: token_data.claims }))
+        ready(Ok(AuthenticatedUser {
+            claims: token_data.claims,
+        }))
     }
 }
 
@@ -57,13 +59,22 @@ mod tests {
             role: role.to_string(),
             exp,
         };
-        encode(&Header::default(), &claims, &EncodingKey::from_secret(secret.as_bytes())).unwrap()
+        encode(
+            &Header::default(),
+            &claims,
+            &EncodingKey::from_secret(secret.as_bytes()),
+        )
+        .unwrap()
     }
 
     #[actix_web::test]
     async fn test_valid_token() {
         std::env::set_var("JWT_SECRET", "test_secret");
-        let exp = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as usize + 3600;
+        let exp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs() as usize
+            + 3600;
         let token = create_token("user123", "admin", exp, "test_secret");
 
         let req = test::TestRequest::default()
@@ -71,7 +82,9 @@ mod tests {
             .to_http_request();
 
         let mut payload = actix_web::dev::Payload::None;
-        let auth = AuthenticatedUser::from_request(&req, &mut payload).await.unwrap();
+        let auth = AuthenticatedUser::from_request(&req, &mut payload)
+            .await
+            .unwrap();
 
         assert_eq!(auth.claims.sub, "user123");
         assert_eq!(auth.claims.role, "admin");
@@ -80,7 +93,11 @@ mod tests {
     #[actix_web::test]
     async fn test_invalid_signature() {
         std::env::set_var("JWT_SECRET", "test_secret");
-        let exp = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as usize + 3600;
+        let exp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs() as usize
+            + 3600;
         let token = create_token("user123", "admin", exp, "wrong_secret");
 
         let req = test::TestRequest::default()
@@ -96,7 +113,11 @@ mod tests {
     #[actix_web::test]
     async fn test_expired_token() {
         std::env::set_var("JWT_SECRET", "test_secret");
-        let exp = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as usize - 3600;
+        let exp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs() as usize
+            - 3600;
         let token = create_token("user123", "admin", exp, "test_secret");
 
         let req = test::TestRequest::default()
@@ -109,4 +130,3 @@ mod tests {
         assert!(res.is_err());
     }
 }
-

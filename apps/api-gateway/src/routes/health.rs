@@ -3,9 +3,8 @@ use serde_json::json;
 
 #[get("/health")]
 pub async fn health() -> impl Responder {
-  HttpResponse::Ok().json(json!({
-    "status": "ok",
-    "service": "api-gateway"
-  }))
+    HttpResponse::Ok().json(json!({
+      "status": "ok",
+      "service": "api-gateway"
+    }))
 }
-

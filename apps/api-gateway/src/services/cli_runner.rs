@@ -1,9 +1,9 @@
+use actix_web::web::Bytes;
 use std::process::Stdio;
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::process::Command;
 use tokio::sync::mpsc;
 use tokio_stream::wrappers::ReceiverStream;
-use actix_web::web::Bytes;
 
 use crate::Config;
 
@@ -12,12 +12,11 @@ pub async fn run_agent_cli(
     _task_id: &str,
     command: &str,
 ) -> Result<ReceiverStream<Result<Bytes, String>>, String> {
-    
     // We execute the configured CLI script. We pass the user's command as an argument.
     // e.g. ./scripts/run_agent.sh "user command"
     let mut cmd = Command::new(&config.agent_cli_command);
     cmd.arg(command);
-    
+
     cmd.stdout(Stdio::piped());
     cmd.stderr(Stdio::piped());
 
