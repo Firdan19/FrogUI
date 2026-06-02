@@ -1,19 +1,4 @@
 services:
-  core-engine:
-    build:
-      context: .
-      dockerfile: infra/docker/core-engine.Dockerfile
-    container_name: frogui-core-engine
-    expose:
-      - "8080"
-    environment:
-      - CORE_ENGINE_PORT=8080
-      - DATABASE_URL=${DATABASE_URL:-postgres://frogui:frogui_dev_password@postgres:5432/frogui}
-      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
-    depends_on:
-      - postgres
-      - redis
-
   api-gateway:
     build:
       context: .
@@ -24,11 +9,10 @@ services:
     environment:
       - GATEWAY_HOST=0.0.0.0
       - GATEWAY_PORT=3001
-      - CORE_ENGINE_URL=http://core-engine:8080
+      - AGENT_CLI_COMMAND=${AGENT_CLI_COMMAND:-./scripts/run_agent.sh}
       - DATABASE_URL=${DATABASE_URL:-postgres://frogui:frogui_dev_password@postgres:5432/frogui}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
     depends_on:
-      - core-engine
       - postgres
       - redis
 

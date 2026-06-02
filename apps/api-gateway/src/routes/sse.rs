@@ -4,7 +4,7 @@ use bytes::Bytes;
 use serde_json::json;
 use futures_util::StreamExt;
 
-use crate::services::core_client;
+use crate::services::cli_runner;
 use crate::AppState;
 
 #[get("/api/stream/{task_id}")]
@@ -26,15 +26,14 @@ pub async fn stream_task(path: web::Path<String>, state: web::Data<AppState>) ->
       Some(command) => {
         yield Ok::<Bytes, Error>(sse_event("gateway", json!({
           "task_id": task_id.clone(),
-          "message": "Gateway validated command and is calling the C++ core engine."
+          "message": "Gateway validated command and is executing the agent CLI."
         })));
 
-        match core_client::run_agent(&config, &task_id, &command).await {
+        match cli_runner::run_agent_cli(&config, &task_id, &command).await {
           Ok(mut response) => {
             while let Some(chunk_result) = response.next().await {
               match chunk_result {
                 Ok(bytes) => {
-                  // Langsung forward bytes (SSE chunks) dari C++ ke Frontend
                   yield Ok::<Bytes, Error>(bytes);
                 }
                 Err(e) => {

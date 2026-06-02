@@ -112,20 +112,30 @@ export class FrogAgentStream extends HTMLElement {
     const typeStr = message.type;
     const contentStr = message.payload.content ?? message.payload.message ?? JSON.stringify(message.payload);
 
-    if (typeStr === 'inference_token') {
-      if (!this.activeStreamingNode) {
-        // Create new block for inference
+    if (typeStr === 'inference_token' || typeStr === 'stdout' || typeStr === 'stderr') {
+      if (!this.activeStreamingNode || this.activeStreamingNode.dataset.type !== typeStr) {
+        if (this.activeStreamingNode) {
+            this.activeStreamingNode.classList.remove('streaming');
+        }
+        // Create new block for continuous stream
         const row = document.createElement('article');
         row.className = 'event';
         const type = document.createElement('div');
         type.className = 'type';
-        type.textContent = 'inference';
+        type.textContent = typeStr === 'inference_token' ? 'inference' : typeStr;
+        if (typeStr === 'stderr') {
+            type.style.color = '#ff6b6b';
+        }
         this.activeStreamingNode = document.createElement('div');
         this.activeStreamingNode.className = 'content streaming';
+        this.activeStreamingNode.dataset.type = typeStr;
+        if (typeStr === 'stderr') {
+             this.activeStreamingNode.style.color = '#ff6b6b';
+        }
         row.append(type, this.activeStreamingNode);
         this.events.appendChild(row);
       }
-      this.activeStreamingNode.textContent += contentStr;
+      this.activeStreamingNode.textContent += contentStr + '\n';
       return;
     }
 

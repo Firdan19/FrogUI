@@ -8,7 +8,7 @@ export class FrogStreamClient {
     this.close();
     this.source = new EventSource(`${this.gatewayUrl}${streamUrl}`);
 
-    ['queued', 'gateway', 'memory', 'inference', 'complete', 'final', 'error'].forEach((eventName) => {
+    ['queued', 'gateway', 'memory', 'inference', 'complete', 'final', 'error', 'stdout', 'stderr', 'exit'].forEach((eventName) => {
       this.source.addEventListener(eventName, (event) => {
         handlers.onEvent?.({
           type: eventName,
