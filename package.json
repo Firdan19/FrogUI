@@ -1,0 +1,17 @@
+{
+  "name": "frogui",
+  "private": true,
+  "version": "0.1.0",
+  "description": "WebLabs Agent Framework initial monorepo scaffold.",
+  "workspaces": [
+    "apps/studio",
+    "apps/frontend",
+    "packages/ui-core",
+    "packages/react-adapter"
+  ],
+  "scripts": {
+    "dev:studio": "npm --workspace apps/studio run dev",
+    "build:studio": "npm --workspace apps/studio run build"
+  }
+}
+

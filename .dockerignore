@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+build/
+dist/
+target/
+
+# Environment & Secrets
+.env
+.env.local
+.env.production
+
+# AI Models
+apps/core-engine/models/*.gguf
+
+# Database volumes
+database/postgres/data/
+database/redis/data/
+
+# Git & OS
+.git/
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+*.tmp

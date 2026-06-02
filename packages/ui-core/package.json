@@ -1,0 +1,13 @@
+{
+  "name": "@frogui/ui-core",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "FrogUI vanilla Web Components with Shadow DOM.",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ]
+}
+

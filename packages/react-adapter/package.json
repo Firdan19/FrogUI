@@ -1,0 +1,19 @@
+{
+  "name": "@frogui/react-adapter",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "React wrappers and hooks for FrogUI Web Components.",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "dependencies": {
+    "@frogui/ui-core": "file:../ui-core"
+  },
+  "files": [
+    "src"
+  ]
+}
+

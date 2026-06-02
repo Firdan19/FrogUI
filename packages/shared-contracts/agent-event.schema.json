@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://frogui.local/schemas/agent-event.schema.json",
+  "title": "Agent Event",
+  "type": "object",
+  "required": ["task_id", "type", "content"],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "type": {
+      "enum": ["queued", "gateway", "memory", "inference", "complete", "final", "error"]
+    },
+    "content": {
+      "type": "string"
+    }
+  }
+}
+

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FrogUI Studio</title>
+  </head>
+  <body>
+    <main class="studio-shell">
+      <section class="studio-command-surface">
+        <frog-status-indicator label="Private Runtime"></frog-status-indicator>
+        <frog-command-panel gateway-url="http://localhost:3001"></frog-command-panel>
+      </section>
+      <section class="studio-stream-surface">
+        <frog-agent-stream gateway-url="http://localhost:3001"></frog-agent-stream>
+        <frog-memory-view></frog-memory-view>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
+

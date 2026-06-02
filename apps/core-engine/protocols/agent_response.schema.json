@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://frogui.local/schemas/agent_response.schema.json",
+  "title": "FrogUI Agent Response",
+  "type": "object",
+  "required": ["task_id", "events", "final_text"],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "content"],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "final_text": {
+      "type": "string"
+    }
+  }
+}
+

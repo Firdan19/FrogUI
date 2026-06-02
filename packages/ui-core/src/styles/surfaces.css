@@ -1,0 +1,12 @@
+.frog-glass-surface {
+  background: var(--frog-glass-soft);
+  backdrop-filter: blur(22px);
+  box-shadow: var(--frog-shadow-deep);
+}
+
+.frog-borderless-stack {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+

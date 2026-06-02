@@ -1,0 +1,63 @@
+# ==========================
+# OS Generated Files
+# ==========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================
+# Environment & Secrets
+# ==========================
+.env
+.env.local
+.env.production
+.env.*.local
+
+# ==========================
+# Dependencies
+# ==========================
+node_modules/
+
+# ==========================
+# Build Artifacts
+# ==========================
+build/
+dist/
+target/
+coverage/
+*.o
+*.a
+*.so
+*.dylib
+
+# ==========================
+# AI Models (download via: bash scripts/download_model.sh)
+# ==========================
+apps/core-engine/models/*.gguf
+
+# ==========================
+# IDE & Editor
+# ==========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ==========================
+# C/C++ Tooling (local only)
+# ==========================
+compile_flags.txt
+compile_commands.json
+
+# ==========================
+# Logs & Temp
+# ==========================
+*.log
+*.tmp
+
+# ==========================
+# Database Volumes
+# ==========================
+database/postgres/data/
+database/redis/data/

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://frogui.local/schemas/agent-command.schema.json",
+  "title": "Agent Command",
+  "type": "object",
+  "required": ["command"],
+  "properties": {
+    "command": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 12000
+    }
+  },
+  "additionalProperties": false
+}
+

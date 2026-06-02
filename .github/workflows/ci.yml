@@ -1,0 +1,77 @@
+name: FrogUI Production CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-rust-gateway:
+    name: Build & Lint Rust Gateway
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api-gateway
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Cache cargo registry
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            apps/api-gateway/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Run Cargo Check
+        run: cargo check --verbose
+      - name: Run Cargo Fmt
+        run: cargo fmt -- --check
+      - name: Run Cargo Clippy
+        run: cargo clippy -- -D warnings
+      - name: Run Cargo Test
+        run: cargo test
+
+  build-cpp-engine:
+    name: Build C++ Core Engine
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/core-engine
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake gcc g++ libpq-dev
+      - name: Configure CMake
+        run: cmake -B build -S .
+      - name: Build Core Engine
+        run: cmake --build build --config Release
+      - name: Run CTest
+        run: ctest --test-dir build --output-on-failure
+
+  build-frontend:
+    name: Build UI & React
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Studio
+        run: npm run build:studio
+
+  docker-verify:
+    name: Verify Docker Compose Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Docker Compose
+        run: docker compose build
