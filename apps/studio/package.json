@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@frogui/ui-core": "file:../../packages/ui-core",
+    "@vitejs/plugin-react": "^4.7.0",
+    "@xyflow/react": "^12.11.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "vite": "^5.4.0"
-  },
-  "devDependencies": {}
+  }
 }
-
