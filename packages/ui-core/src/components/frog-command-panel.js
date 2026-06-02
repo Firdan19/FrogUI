@@ -5,17 +5,25 @@ template.innerHTML = `
   <style>
     :host {
       display: block;
-      color: #f2eee5;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-width: 0;
+      color: var(--frog-color-ivory, #f2eee5);
+      font-family: var(--frog-font-sans, 'Outfit', sans-serif);
     }
 
     .panel {
       display: grid;
-      gap: 16px;
-      padding: 20px;
-      background: rgba(242, 238, 229, 0.08);
+      gap: 20px;
+      padding: 24px;
+      background: var(--frog-glass-strong, rgba(242, 238, 229, 0.08));
       backdrop-filter: blur(22px);
       box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+      border-radius: 16px;
+      border: 1px solid rgba(242, 238, 229, 0.05);
+      transition: border-color 0.3s ease;
+    }
+
+    .panel:focus-within {
+      border-color: rgba(216, 199, 163, 0.3);
     }
 
     .label {
@@ -24,8 +32,9 @@ template.innerHTML = `
       justify-content: space-between;
       gap: 12px;
       color: rgba(242, 238, 229, 0.68);
-      font-size: 12px;
-      letter-spacing: 0;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
     }
 
@@ -39,7 +48,7 @@ template.innerHTML = `
       color: #f2eee5;
       font: inherit;
       font-size: 18px;
-      line-height: 1.55;
+      line-height: 1.6;
     }
 
     textarea::placeholder {
@@ -61,14 +70,26 @@ template.innerHTML = `
     }
 
     button {
-      min-height: 42px;
+      min-height: 44px;
       border: 0;
-      padding: 0 18px;
-      background: #d8c7a3;
+      border-radius: 8px;
+      padding: 0 24px;
+      background: var(--frog-color-brass, #d8c7a3);
       color: #171918;
       cursor: pointer;
       font: inherit;
-      font-weight: 650;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(216, 199, 163, 0.3);
+    }
+
+    button:active:not(:disabled) {
+      transform: translateY(0);
     }
 
     button:disabled {

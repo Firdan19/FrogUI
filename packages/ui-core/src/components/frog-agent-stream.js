@@ -6,16 +6,18 @@ template.innerHTML = `
     :host {
       display: block;
       min-width: 0;
-      color: #f2eee5;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--frog-color-ivory, #f2eee5);
+      font-family: var(--frog-font-sans, 'Outfit', sans-serif);
     }
 
     .stream {
       min-height: 480px;
       padding: 24px;
-      background: rgba(242, 238, 229, 0.06);
+      background: var(--frog-glass-strong, rgba(242, 238, 229, 0.08));
       backdrop-filter: blur(24px);
       box-shadow: 0 30px 100px rgba(0, 0, 0, 0.25);
+      border-radius: 16px;
+      border: 1px solid rgba(242, 238, 229, 0.05);
     }
 
     .header {
@@ -25,7 +27,9 @@ template.innerHTML = `
       gap: 16px;
       margin-bottom: 24px;
       color: rgba(242, 238, 229, 0.66);
-      font-size: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
     }
 
@@ -39,17 +43,27 @@ template.innerHTML = `
       gap: 6px;
       padding: 16px 0;
       border-bottom: 1px solid rgba(242, 238, 229, 0.08);
+      animation: slideIn 0.3s ease-out forwards;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .type {
-      color: #d8c7a3;
+      color: var(--frog-color-brass, #d8c7a3);
       font-size: 12px;
+      font-weight: 600;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .content {
       color: rgba(242, 238, 229, 0.88);
-      line-height: 1.55;
+      line-height: 1.6;
+      font-family: var(--frog-font-mono, 'JetBrains Mono', monospace);
+      font-size: 14px;
       overflow-wrap: anywhere;
       white-space: pre-wrap;
     }
@@ -59,7 +73,7 @@ template.innerHTML = `
       display: inline-block;
       margin-left: 4px;
       animation: blink 1s step-end infinite;
-      color: #d8c7a3;
+      color: var(--frog-color-brass, #d8c7a3);
     }
 
     @keyframes blink {
